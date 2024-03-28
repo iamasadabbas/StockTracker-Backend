@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       minLength: [8, "Password should be greater than 8 character"],
     },
     phone_no: {
-      type: Number,
+      type: String,
       required: true,
     },
     avatar: {

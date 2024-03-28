@@ -18,7 +18,9 @@ const {
   changePassword,
   updateAssignTask,
   addDesignation,
-  getDesignation
+  getDesignation,
+  removeUser,
+  editUser
 
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
@@ -44,7 +46,7 @@ router.route("/updateAssignRoleTask/:role_id/:task_id").put(updateAssignTask);
 // Get Route
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.route("/getAllUser/:roleName").get(getAllUser);
+router.route("/getAllUser").get(getAllUser);
 router.route("/getRole").get(getRole);
 router.route("/getDepartment").get(getDepartment);
 router.route("/getDesignation").get(getDesignation);
@@ -58,9 +60,11 @@ router.route("/getSpecificTask/:role_id").get(getSpecificTask);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.route("/removeTaskFromRole").post(removeRoleTask);
+router.route("/removeUser/:user_id").delete(removeUser);
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 router.route("/editTask").put(editTask);
+router.route("/editUser/:user_id").put(editUser);
 router.put("/editUserDetail",upload.single('image'), controller.editUserDetail);
 router.route("/changePassword").put(changePassword);
 

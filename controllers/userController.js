@@ -97,23 +97,22 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
 // get all users
 /////////////////////////////////////////////////////////////////////////////////////////////
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
-  const name = req.params.roleName;
-  if (name == "SuperAdmin") {
-    const users = await User.find().populate("role_id");
-    res.status(200).json({
-      success: true,
-      users,
-    });
-  } else {
-    const users = await User.find({
-      role_id: { $ne: "6539fc65e3d260f027857084" },
-    }).populate("role_id");
-    res.status(200).json({
-      success: true,
-      users,
-    });
-  }
-});
+  // const name = req.params.roleName;
+  // if (name == "SuperAdmin") {
+    try {
+      const users = await User.find().populate("role_id");
+      if(users){
+        res.send({
+          status:200,
+          users,
+        });
+      }else{
+        res.send({status:200,message:"user not found"})
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  })
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 // add task
@@ -392,6 +391,36 @@ exports.removeRoleTask = catchAsyncErrors(async (req, res, next) => {
     });
   } catch (error) { }
 });
+
+
+/////// remove User ///////////
+exports.removeUser = catchAsyncErrors(async (req, res, next) => {
+  const { user_id } = req.params.user_id;
+  try {
+    await User.deleteOne({ user_id});
+    res.send({
+      status:200,
+    });
+  } catch (error) { 
+    console.error(error);
+  }
+});
+
+//////////Edit User //////////
+exports.editUser = catchAsyncErrors(async (req, res, next) => {
+  const { name,email,phone_no } = req.body;
+  console.log(req.params.user_id);
+  console.log(req.body);
+  try {
+    await User.updateOne({ name:name,email:email,phone_no:phone_no});
+    res.send({
+      status:200,
+      message:'updated successfully'
+    });
+  } catch (error) { 
+    console.error(error);
+  }
+});
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // get Role Task
@@ -437,7 +466,7 @@ exports.editUserDetail = catchAsyncErrors(async (req, res, next) => {
   console.log(req.body);
   const updatedFields = {
     name: req.body.name,
-    phone_no: Number(req.body.phone_no),
+    phone_no: req.body.phone_no,
   };
   if (req.file && req.file.path) {
     updatedFields.avatar = req.file.path;
